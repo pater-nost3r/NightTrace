@@ -1,0 +1,7 @@
+.deps
+.venv
+.skyshift-cache
+**/__pycache__
+artifact
+.git
+*.zip

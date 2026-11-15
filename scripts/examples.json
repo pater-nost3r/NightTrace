@@ -1,0 +1,56 @@
+[
+ {
+  "id": "cats-eye",
+  "ra": 269.6392,
+  "dec": 66.6331,
+  "comparison": "time",
+  "title": {
+   "ru": "Туманность Кошачий Глаз (NGC 6543)",
+   "en": "Cat’s Eye Nebula (NGC 6543)"
+  },
+  "summary": {
+   "ru": "Знакомство с данными: одна область у северного полюса эклиптики, 15 визитов SPHEREx за 17 месяцев.",
+   "en": "A first look at the data: one field near the north ecliptic pole, 15 SPHEREx visits over 17 months."
+  }
+ },
+ {
+  "id": "orion",
+  "ra": 83.822,
+  "dec": -5.391,
+  "comparison": "time",
+  "keys": [
+   "dr1/level2/2025W37_1A/l2b-v27-2026-235/1/level2_2025W37_1A_0033_2D1_spx_l2b-v27-2026-235.fits",
+   "dr1/level2/2026W11_2A/l2b-v27-2026-234/1/level2_2026W11_2A_0519_1D1_spx_l2b-v27-2026-234.fits"
+  ],
+  "title": {
+   "ru": "Туманность Ориона (M42)",
+   "en": "Orion Nebula (M42)"
+  },
+  "summary": {
+   "ru": "Два визита с интервалом в полгода.",
+   "en": "Two visits half a year apart."
+  }
+ },
+ {
+  "id": "pluto",
+  "ra": 308.526,
+  "dec": -22.892,
+  "comparison": "time",
+  "keys": [
+   "dr1/level2/2026W17_2A/l2b-v27-2026-243/1/level2_2026W17_2A_0387_1D1_spx_l2b-v27-2026-243.fits",
+   "dr1/level2/2026W17_2A/l2b-v27-2026-243/1/level2_2026W17_2A_0387_4D1_spx_l2b-v27-2026-243.fits",
+   "dr1/level2/2026W17_2A/l2b-v27-2026-243/1/level2_2026W17_2A_0553_1D1_spx_l2b-v27-2026-243.fits",
+   "dr1/level2/2026W17_2A/l2b-v27-2026-243/1/level2_2026W17_2A_0650_4D1_spx_l2b-v27-2026-243.fits",
+   "dr1/level2/2026W18_1A/l2b-v27-2026-244/1/level2_2026W18_1A_0198_1D1_spx_l2b-v27-2026-244.fits",
+   "dr1/level2/2026W18_1A/l2b-v27-2026-244/1/level2_2026W18_1A_0212_1D1_spx_l2b-v27-2026-244.fits"
+  ],
+  "title": {
+   "ru": "Плутон: движение за 2,7 суток",
+   "en": "Pluto: motion over 2.7 days"
+  },
+  "summary": {
+   "ru": "Шесть кадров SPHEREx 25–27 апреля 2026 года. Положение Плутона для времени каждого кадра рассчитано по эфемериде JPL DE421.",
+   "en": "Six SPHEREx frames from 25–27 April 2026. Pluto's position at the time of each frame is computed from the JPL DE421 ephemeris."
+  }
+ }
+]

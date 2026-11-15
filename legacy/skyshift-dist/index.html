@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SkyShift — сравнение кадров SPHEREx</title>
+<meta name="description" content="Независимый веб-инструмент для просмотра и сравнения снимков неба миссии SPHEREx (данные NASA/IPAC IRSA).">
+<meta name="theme-color" content="#08090B">
+<script src="es.js"></script>
+<script src="auto-languages.js"></script>
+<script src="preferences.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08090B; --panel:#15171C; --panel-2:#1B1E24; --line:#262931; --line-2:#33363F;
+  --red:#EF233C; --red-dim:rgba(239,35,60,.14); --red-line:rgba(239,35,60,.45);
+  --text:#F5F5F7; --muted:#A1A4AD; --faint:#6C707A;
+  --sans:"Inter Tight",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  --r:10px; --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--text);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,select{font:inherit;color:inherit}
+a{color:var(--text)}
+.mono{font-family:var(--mono);font-feature-settings:"zero" 1}
+.label{font:500 10.5px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+/* ---------- Header ---------- */
+.top{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.preferences{display:flex;gap:10px;flex-wrap:wrap}
+.preferences label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.preferences select{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line-2);border-radius:6px;padding:4px}
+#language-status{color:var(--muted);font-size:13px}
+#translate-interface[hidden]{display:none}
+[dir="rtl"] .viewer-wrap,[dir="rtl"] .timeline,[dir="rtl"] .coords{direction:ltr}
+:root{color-scheme:dark}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F6F7FA;--panel:#FFFFFF;--panel-2:#ECEEF3;--line:#D9DDE6;--line-2:#B7BFCD;
+  --text:#171A22;--muted:#484F5E;--faint:#555D6D;--red:#BD1831;
+}
+[data-theme="light"] .hud,[data-theme="light"] .empty{--text:#F5F5F7;--muted:#CFD3DD;--faint:#C0C6D2}
+[data-theme="light"] .zoombar{background:var(--panel)}
+[data-theme="light"] .tick.cmp .pin{background:repeating-linear-gradient(135deg,transparent 0 3px,#6C707A 3px 4px)}
+@media(max-width:640px){.top .preferences{order:2;width:100%}}
+.brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+.brand b{font-weight:700;font-size:18px;letter-spacing:-.01em}
+.brand b i{font-style:normal;color:var(--red)}
+.brand span{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+.dot.idle{background:var(--faint);box-shadow:none}
+
+/* ---------- Layout ---------- */
+.app{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0;height:calc(100vh - 57px);height:calc(100dvh - 57px)}
+.stage{display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
+.side{display:flex;flex-direction:column;min-width:0;overflow:auto}
+
+.headline{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:22px 24px 18px}
+.headline h1{margin:0;font-size:clamp(24px,2.6vw,34px);line-height:1.08;font-weight:600;letter-spacing:-.02em}
+.headline p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.coords{display:grid;grid-template-columns:auto auto auto;gap:4px 22px;text-align:left;flex-shrink:0}
+.coords .v{font:500 15px/1.2 var(--mono);color:var(--text);white-space:nowrap}
+
+/* ---------- Viewer ---------- */
+.viewer-wrap{position:relative;margin:0 24px;flex:1;min-height:340px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#000}
+.viewer{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.viewer.dragging{cursor:grabbing}
+.world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.world img{position:absolute;left:0;top:0;display:block;max-width:none;pointer-events:none;-webkit-user-drag:none}
+.world.pixel img{image-rendering:pixelated}
+.layer-b{clip-path:inset(0 0 0 50%)}
+.hud{position:absolute;pointer-events:none;font:500 11px/1.35 var(--mono);color:var(--text);background:rgba(8,9,11,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:6px 9px}
+.hud .k{color:var(--faint)}
+.hud.tl{top:12px;left:12px}.hud.tr{top:12px;right:12px;text-align:right}
+.hud.bl{bottom:12px;left:12px}.hud.br{bottom:12px;right:12px;text-align:right}
+.frame-tag{display:inline-flex;align-items:center;gap:6px}
+.frame-tag .sw{width:8px;height:8px;border-radius:2px;background:var(--text)}
+.frame-tag.b .sw{background:transparent;border:1.5px solid var(--text)}
+.split{position:absolute;top:0;bottom:0;width:0;pointer-events:none;display:none}
+.split::before{content:"";position:absolute;top:0;bottom:0;left:-1px;width:2px;background:var(--red)}
+.split .grip{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:var(--red);display:grid;place-items:center;pointer-events:auto;cursor:ew-resize;box-shadow:0 2px 12px rgba(0,0,0,.5);touch-action:none}
+.split .grip svg{width:18px;height:18px}
+.split .lab{position:absolute;top:12px;font:600 10.5px/1 var(--mono);letter-spacing:.1em;background:var(--red);color:#fff;padding:4px 6px;border-radius:4px;white-space:nowrap}
+.split .lab.a{right:8px}.split .lab.b{left:8px}
+.mode-swipe .split{display:block}
+.mode-swipe .hud.tl,.mode-swipe .hud.tr{top:44px}
+.zoombar{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;background:rgba(21,23,28,.9)}
+.zoombar button{width:38px;height:38px;border:0;background:transparent;display:grid;place-items:center;cursor:pointer;transition:background .15s}
+.zoombar button+button{border-top:1px solid var(--line-2)}
+.zoombar button:hover{background:var(--panel-2)}
+.zoombar svg{width:16px;height:16px}
+.empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px}
+.empty[hidden]{display:none}
+.empty b{display:block;color:var(--text);font-size:17px;margin-bottom:6px}
+
+/* ---------- Controls ---------- */
+.controls{padding:16px 24px 22px;display:grid;gap:14px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:6px;cursor:pointer;color:var(--muted);font-weight:500;display:inline-flex;align-items:center;gap:8px;transition:background .18s var(--ease),color .18s}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed="true"]{background:var(--red);color:#fff}
+.seg svg{width:16px;height:16px;flex-shrink:0}
+.btn{border:1px solid var(--line-2);background:var(--panel);border-radius:9px;height:40px;padding:0 14px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:500;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover{border-color:var(--faint)}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:16px;height:16px}
+.btn.icon{width:40px;padding:0;justify-content:center}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff;min-width:118px;justify-content:center}
+.btn.primary:hover{background:#ff3550;border-color:#ff3550}
+.btn[disabled]{opacity:.4;cursor:default}
+.speed{display:inline-flex;align-items:center;gap:8px;color:var(--muted)}
+.speed .seg button{padding:6px 10px;font:500 12px/1 var(--mono)}
+.hint{color:var(--faint);font-size:13px;margin-left:auto}
+
+/* Timeline */
+.timeline{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px 10px}
+.tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.tl-head .mono{font-size:12px;color:var(--muted)}
+.track{position:relative;height:46px;margin:0 22px;cursor:pointer;touch-action:none}
+.track .rail{position:absolute;left:0;right:0;top:20px;height:2px;background:var(--line-2);border-radius:2px}
+.track .fill{position:absolute;left:0;top:20px;height:2px;background:var(--red);border-radius:2px;transition:width .25s var(--ease)}
+.tick{position:absolute;top:8px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0;cursor:pointer}
+.tick .pin{width:10px;height:26px;border-radius:4px;border:2px solid var(--muted);background:var(--bg);transition:all .18s var(--ease)}
+.tick .t{font:500 10.5px/1 var(--mono);color:var(--muted);white-space:nowrap}
+.tick:hover .pin{border-color:var(--text)}
+.tick.on .pin{border-color:var(--red);background:var(--red);box-shadow:0 0 0 4px var(--red-dim)}
+.tick.on .t{color:var(--text)}
+.tick.cmp .pin{border-color:var(--text);background:repeating-linear-gradient(135deg,transparent 0 3px,rgba(245,245,247,.5) 3px 4px)}
+
+/* ---------- Sidebar ---------- */
+.sec{padding:20px 22px;border-bottom:1px solid var(--line)}
+.sec h2{margin:0 0 14px;font-size:13px;font-weight:600;letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.sec h2 .n{font:500 10.5px/1 var(--mono);color:var(--red)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;margin:0}
+.kv dt{color:var(--muted);font-size:13px}
+.kv dd{margin:0;text-align:right;font:500 13px/1.35 var(--mono);word-break:break-word}
+.frames{display:grid;gap:8px}
+.fcard{display:grid;grid-template-columns:44px 1fr 32px;gap:12px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:transparent;text-align:left;cursor:pointer;transition:border-color .15s,background .15s;width:100%}
+.fcard:hover{border-color:var(--line-2);background:var(--panel)}
+.fcard.on{border-color:var(--red-line);background:var(--panel)}
+.fcard img{width:44px;height:44px;object-fit:cover;border-radius:5px;background:#000;display:block}
+.fcard .ttl{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.fcard .badge{font:600 9.5px/1 var(--mono);letter-spacing:.08em;padding:3px 5px;border-radius:3px;background:var(--red);color:#fff}
+.fcard .badge.b{background:transparent;color:var(--text);border:1px solid var(--line-2)}
+.fcard .meta{font:400 11.5px/1.45 var(--mono);color:var(--muted)}
+.links{display:grid;gap:6px;margin-top:12px}
+.links:empty{display:none}
+.proc{color:var(--muted);font-size:12.5px;margin:14px 0 0}
+.fcard{position:relative}
+.fbody{min-width:0}
+.setb{width:30px;height:30px;border-radius:6px;border:1px solid var(--line-2);background:var(--bg);color:var(--muted);font:600 11px/1 var(--mono);cursor:pointer;transition:all .15s}
+.setb:hover{color:var(--text);border-color:var(--text)}
+.fcard.isb .setb{background:var(--text);color:var(--bg);border-color:var(--text)}
+.fcard.isa .setb{visibility:hidden}
+.links a{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--text);text-decoration:none;padding:9px 12px;border:1px solid var(--line);border-radius:8px;transition:border-color .15s}
+.links a:hover{border-color:var(--red-line)}
+.links a span:last-child{color:var(--red);font-family:var(--mono)}
+.steps{margin:0;padding:0;list-style:none;display:grid;gap:12px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:24px 1fr;gap:10px;color:var(--muted);font-size:13.5px}
+.steps li::before{counter-increment:s;content:counter(s);width:22px;height:22px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center;font:500 11px/1 var(--mono);color:var(--text)}
+.steps b{color:var(--text);font-weight:600}
+.note{border-left:2px solid var(--red);padding:2px 0 2px 14px;color:var(--muted);font-size:13.5px}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note b{color:var(--text)}
+.foot{padding:18px 22px;color:var(--faint);font-size:12px;margin-top:auto}
+.foot a{color:var(--muted)}
+kbd{font:500 11px/1 var(--mono);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px;padding:2px 5px;color:var(--muted)}
+
+/* ---------- Mobile ---------- */
+@media (max-width:980px){
+  .app{grid-template-columns:1fr;height:auto}
+  .viewer-wrap{flex:none;height:62vh}
+  .stage{border-right:0}
+  .side{overflow:visible;border-top:1px solid var(--line)}
+}
+@media (max-width:640px){
+  .top{padding:12px 16px;gap:12px}
+  .brand span{display:none}
+  .headline{flex-direction:column;align-items:flex-start;padding:16px 16px 12px;gap:12px}
+  .coords{grid-template-columns:repeat(3,auto);gap:3px 16px}
+  .coords .v{font-size:13px}
+  .viewer-wrap{margin:0;border-radius:0;border-left:0;border-right:0;flex:none;min-height:0;height:auto;aspect-ratio:1/1;max-height:70vh}
+  .controls{padding:12px 16px 16px;gap:12px}
+  .row.modes{display:grid;grid-template-columns:1fr}
+  .seg.modes{width:100%}
+  .seg.modes button{flex:1;justify-content:center;padding:10px 6px;font-size:14px}
+  .row.transport{display:grid;grid-template-columns:auto 1fr auto;gap:8px}
+  .row.transport .btn.primary{min-width:0}
+  .speed{grid-column:1/-1;justify-content:space-between}
+  .hint{display:none}
+  .zoombar{top:auto;bottom:12px;transform:none;flex-direction:row}
+  .zoombar button+button{border-top:0;border-left:1px solid var(--line-2)}
+  .hud.br{bottom:62px}
+  .hud{font-size:10.5px;padding:5px 7px}
+  .sec{padding:18px 16px}
+  .timeline{padding:10px 12px 8px}
+  .tl-head{flex-direction:column;gap:6px}
+  .track{margin:0 12px}
+  .tick .t{display:none}
+  .tick.first .t,.tick.last .t,.tick.on .t{display:block}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.sky-section{margin:0 auto;padding:20px 24px;max-width:1600px;border-bottom:1px solid var(--line)}
+.sky-section h2{margin:0;font-size:21px}
+.sky-section p{margin:4px 0 10px;color:var(--muted)}
+.sky-chart{max-width:880px;margin:auto}
+#celestial-map{display:block;width:100%;max-height:380px}
+.sky-surface{fill:var(--panel);stroke:var(--line-2);cursor:crosshair}
+.sky-grid,.sky-pin{pointer-events:none}
+.sky-grid line{stroke:var(--line-2);stroke-width:1}
+.sky-grid text,.sky-place text{fill:var(--muted);font:12px var(--mono)}
+.sky-grid .galactic-equator{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-dasharray:4 5}
+.sky-place{cursor:pointer}.sky-place circle{fill:var(--red);stroke:var(--bg);stroke-width:2}
+.sky-place:hover text,.sky-place:focus-visible text{fill:var(--text)}
+.sky-pin{fill:none;stroke:var(--red);stroke-width:2}
+.sky-actions{display:flex;gap:8px 14px;align-items:center;flex-wrap:wrap}
+.sky-actions label{display:flex;gap:5px;align-items:center;color:var(--muted);font-family:var(--mono)}
+.sky-actions input{width:98px;padding:8px;color:var(--text);background:var(--panel);border:1px solid var(--line-2);border-radius:6px;font:inherit}
+#sky-status{min-height:1.5em;margin:9px 0 0;color:var(--muted)}
+@media(max-width:640px){.sky-section{padding:16px}.sky-place text{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><b>Sky<i>Shift</i></b><span>Сравнение снимков неба SPHEREx · независимый проект на открытых данных NASA/IPAC</span></div>
+  <div class="status"><span class="dot idle" id="statusDot"></span><span class="label" id="statusText">Пауза</span></div>
+  <div class="preferences">
+    <label><span>Тема</span><select id="theme-pref">
+      <option value="system">Системная</option>
+      <option value="light">Светлая</option>
+      <option value="dark">Тёмная</option>
+    </select></label>
+    <label><span>Язык</span><select id="language-pref">
+      <option value="ru" lang="ru">Русский</option>
+      <option value="en" lang="en">English</option>
+      <option value="es" lang="es">Español</option>
+    </select></label>
+    <button class="btn" id="translate-interface" type="button" hidden>Перевести</button>
+    <span id="language-status" role="status"></span>
+    <a id="translation-help" href="https://support.google.com/chrome/answer/173424" target="_blank" rel="noopener" hidden>Перевод в браузере</a>
+  </div>
+</header>
+
+<section id="sky-section" class="sky-section" hidden>
+  <h2>Карта всего неба</h2>
+  <p>Нажмите на карту или введите координаты, чтобы сравнить снимки SPHEREx за разные даты.</p>
+  <div class="sky-chart">
+    <svg id="celestial-map" viewBox="0 0 780 405" role="group" aria-label="Карта всего неба">
+      <rect class="sky-surface" x="30" y="14" width="720" height="360" rx="3"/>
+      <g class="sky-grid" aria-hidden="true"></g>
+      <g class="sky-markers"></g>
+    </svg>
+  </div>
+  <form class="sky-actions" id="sky-search">
+    <label>RA <input id="sky-ra" type="number" min="0" max="359.9999" step="any" required></label>
+    <label>Dec <input id="sky-dec" type="number" min="-90" max="90" step="any" required></label>
+    <button type="submit" class="btn primary">Найти снимки</button>
+    <button type="button" class="btn" id="sky-example">Пример: Кошачий Глаз</button>
+    <button type="button" class="btn" id="sky-orion">Пример: Орион</button>
+  </form>
+  <p id="sky-status" role="status"></p>
+</section>
+<main class="app" id="observations">
+  <section class="stage" aria-label="Просмотр неба">
+    <div class="headline">
+      <div>
+        <div class="label" id="eyebrow">Область неба</div>
+        <h1 id="title">Загрузка данных…</h1>
+        <p id="subtitle">Один и тот же участок неба в разное время. Переключайте кадры и ищите, что изменилось.</p>
+      </div>
+      <div class="coords" aria-label="Координаты центра">
+        <span class="label">RA</span><span class="label">Dec</span><span class="label">Диапазон</span>
+        <span class="v" id="cRa">—</span><span class="v" id="cDec">—</span><span class="v" id="cBand">—</span>
+      </div>
+    </div>
+
+    <div class="viewer-wrap" id="viewerWrap">
+      <div class="viewer" id="viewer" tabindex="0" aria-label="Снимок неба. Перетаскивайте для сдвига, колесо или щипок для увеличения.">
+        <div class="world" id="world">
+          <img id="imgA" alt="" draggable="false">
+          <img id="imgB" class="layer-b" alt="" draggable="false">
+        </div>
+        <div class="split" id="split">
+          <span class="lab a" id="labA">A</span><span class="lab b" id="labB">B</span>
+          <div class="grip" id="grip" role="slider" tabindex="0" aria-label="Положение ползунка сравнения" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg>
+          </div>
+        </div>
+        <div class="hud tl" id="hudTL"></div>
+        <div class="hud tr" id="hudTR"></div>
+        <div class="hud bl" id="hudBL"></div>
+        <div class="hud br" id="hudBR"></div>
+        <div class="zoombar" role="group" aria-label="Масштаб">
+          <button id="zIn" title="Приблизить (+)" aria-label="Приблизить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button id="zOut" title="Отдалить (−)" aria-label="Отдалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+          <button id="zFit" title="Вписать (0)" aria-label="Вписать целиком"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+        <div class="empty" id="empty" hidden></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div id="archive-controls" hidden>
+        <button class="btn" id="refresh-archive" type="button">Обновить снимки из архива</button>
+        <span id="archive-status" role="status"></span>
+      </div>
+      <div class="row modes">
+        <div class="seg modes" role="group" aria-label="Способ сравнения">
+          <button data-mode="single" aria-pressed="true" title="Один кадр (1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>Кадр</button>
+          <button data-mode="blink" aria-pressed="false" title="Мигание A↔B (2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="12" height="12" rx="2"/><rect x="9" y="3" width="12" height="12" rx="2" stroke-dasharray="3 2"/></svg>Мигание</button>
+          <button data-mode="swipe" aria-pressed="false" title="Ползунок A|B (3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M12 2v20"/></svg>Ползунок</button>
+        </div>
+      </div>
+
+      <div class="timeline" aria-label="Временная шкала">
+        <div class="tl-head"><span class="label">Время наблюдения · <span id="tlDate">UTC</span></span><span class="mono" id="tlSpan">—</span></div>
+        <div class="track" id="track"><div class="rail"></div><div class="fill" id="fill"></div></div>
+      </div>
+
+      <div class="row transport">
+        <button class="btn icon" id="prev" title="Предыдущий кадр (←)" aria-label="Предыдущий кадр"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="btn primary" id="play" aria-pressed="false"><svg id="playIco" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg><span id="playTxt">Проиграть</span></button>
+        <button class="btn icon" id="next" title="Следующий кадр (→)" aria-label="Следующий кадр"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="speed"><span class="label">Скорость</span>
+          <div class="seg" role="group" aria-label="Скорость проигрывания" id="speedSeg">
+            <button data-speed="0.5" aria-pressed="false">0.5×</button>
+            <button data-speed="1" aria-pressed="true">1×</button>
+            <button data-speed="2" aria-pressed="false">2×</button>
+            <button data-speed="4" aria-pressed="false">4×</button>
+          </div>
+        </div>
+        <span class="hint"><kbd>Пробел</kbd> пуск · <kbd>←</kbd><kbd>→</kbd> кадры · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> режимы</span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="sec">
+      <h2><span class="n">01</span>Как смотреть</h2>
+      <ol class="steps">
+        <li><span><b>Осмотрите область.</b> Перетаскивайте снимок, приближайте колесом мыши, щипком или кнопкой «+».</span></li>
+        <li><span><b>Выберите время.</b> Нажмите на отметку на шкале — это момент съёмки кадра.</span></li>
+        <li><span><b>Сравните кадры.</b> «Мигание» быстро чередует A и B, «Ползунок» делит экран пополам. Если точка сдвинулась или изменила яркость, это будет заметно.</span></li>
+      </ol>
+    </div>
+    <div class="sec">
+      <h2><span class="n">02</span>Кадры</h2>
+      <div class="frames" id="frames"></div>
+      <div class="links" id="flinks"></div>
+    </div>
+    <div class="sec">
+      <h2><span class="n">03</span>Данные наблюдения</h2>
+      <dl class="kv" id="meta"></dl>
+      <p class="proc" id="procText"></p>
+      <div class="links" id="glinks"></div>
+    </div>
+    <div class="sec">
+      <h2><span class="n">04</span>Ограничения</h2>
+      <div class="note" id="limits">
+        <p>Соседние экспозиции SPHEREx идут с шагом <b>129 секунд</b> (первые два кадра здесь). За это время почти ничто на небе заметно не сдвигается, и видимые различия обычно дают шум детектора, следы частиц и края кадра.</p>
+        <p>Остальные кадры разделены неделями и месяцами (весь охват — <b id="dtText">—</b>). SPHEREx снимает через фильтр с переменной длиной волны, поэтому в каждом визите объект виден на чуть другой длине волны (λ в углу снимка). Разница в яркости может объясняться этим, а не изменением самого объекта.</p>
+        <p>Инструмент только показывает настоящие снимки рядом. Он <b>не обнаруживает движение автоматически</b> и не находит новые планеты. Любую находку нужно проверять по оригинальным данным.</p>
+      </div>
+    </div>
+    <footer class="foot">
+      Независимый образовательный проект для хакатона 2026. Не является сайтом NASA и не связан с ним. Снимки: миссия SPHEREx, архив NASA/IPAC Infrared Science Archive (IRSA). Изображения показаны без изменений цвета.
+    </footer>
+  </aside>
+</main>
+
+<script src="sky-map.js"></script>
+<script>
+(() => {
+  "use strict";
+  const MANIFEST_URL = "data/manifest.json";
+  const {t, state: preferences, bind: bindPreferences} = window.skyPreferences;
+  const skyMap = window.skyMap;
+  const $ = (id) => document.getElementById(id);
+  const state = { frames: [], meta: {}, a: 0, b: 1, mode: "single", playing: false, speed: 1, timer: null, blinkShow: 0,
+                  scale: 1, minScale: .1, tx: 0, ty: 0, iw: 0, ih: 0, split: .5 };
+
+  /* ---------- Manifest normalisation (accepts several common field names) ---------- */
+  const pick = (o, keys) => { for (const k of keys) { if (o && o[k] !== undefined && o[k] !== null && o[k] !== "") return o[k]; } };
+  function normalise(m, manifestUrl = MANIFEST_URL) {
+    const list = Array.isArray(m) ? m : (m?.frames ?? []);
+    const base = manifestUrl.replace(/[^/]+$/, "");
+    if (!Array.isArray(list)) throw new Error("Invalid observations");
+    const frames = list.map((f, i) => {
+      let src = pick(f, ["src", "file", "image", "png", "path", "url_png", "filename"]) || `frame${i + 1}.png`;
+      if (typeof src !== "string") return null;
+      if (!src.startsWith("data/")) src = base + src.replace(/^\.\//, "");
+      if (!/^data\/(?:orion\/|generated\/[a-f0-9]{32}\/)?frame\d+\.png$/.test(src)) return null;
+      const time = pick(f, ["time", "date", "datetime", "obs_time", "date_obs", "dateobs", "mjd_iso", "timestamp", "utc"]);
+      return {
+        src, raw: f,
+        label: pick(f, ["label", "name", "title", "id", "obs_id", "obsid"]) || `${t("Кадр")} ${i + 1}`,
+        timeRaw: time, date: parseTime(time, f),
+        ra: num(pick(f, ["ra", "ra_deg", "RA", "crval1"])), dec: num(pick(f, ["dec", "dec_deg", "DEC", "Dec", "crval2"])),
+        band: pick(f, ["band", "wavelength", "lambda", "filter", "channel", "detector"]),
+        wl: num(pick(f, ["wavelength_um"])), bw: num(pick(f, ["bandwidth_um"])), obsId: pick(f, ["obs_id", "obsid"]),
+        links: [["FITS-вырезка на IRSA", pick(f, ["link", "url"])], ["Полный файл на IRSA", f.link_full], ["Копия на AWS", f.link_aws]].filter(l => l[1]),
+        link: pick(f, ["link", "source", "source_url", "original", "original_url", "url", "fits_url", "access_url", "irsa_url"]),
+      };
+    }).filter(Boolean);
+    return { frames, meta: m && !Array.isArray(m) ? m : {} };
+  }
+  const num = (v) => (v === undefined || v === null || v === "" || isNaN(+v)) ? undefined : +v;
+  function parseTime(t, f) {
+    if (t === undefined) { const mjd = num(pick(f, ["mjd", "mjd_obs", "t_mid", "t_min"])); return mjd ? new Date((mjd - 40587) * 864e5) : null; }
+    if (typeof t === "number") return t > 1e11 ? new Date(t) : (t > 3e4 && t < 1e5 ? new Date((t - 40587) * 864e5) : new Date(t * 1000));
+    let s = String(t).trim(); if (/^\d{4}-\d\d-\d\d[ T]\d\d:\d\d(:\d\d(\.\d+)?)?$/.test(s)) s = s.replace(" ", "T") + "Z";
+    const d = new Date(s); return isNaN(d) ? null : d;
+  }
+  const pad = (n, w = 2) => String(n).padStart(w, "0");
+  const fmtTime = (d) => d ? `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}` : "—";
+  const fmtDate = (d) => d ? `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}` : "—";
+  const fmtDT = (d, raw) => d ? `${fmtDate(d)} ${fmtTime(d)} UTC` : (raw ?? "—");
+  function fmtDelta(ms) {
+    if (ms == null || isNaN(ms)) return "—"; const s = Math.round(Math.abs(ms) / 1000);
+    if (s < 600) return `${s} ${t("с", "s")}`;
+    if (s < 86400 * 2) return `${Math.floor(s / 3600)} ${t("ч", "h")} ${Math.round((s % 3600) / 60)} ${t("мин", "min")}`;
+    const days = s / 86400;
+    if (days < 45) return `${Math.round(days)} ${t("сут", "d")}`;
+    return `≈ ${Math.round(days / 30.44)} ${t("мес", "mo")}`;
+  }
+  function fmtRA(deg) { if (deg == null) return "—"; const h = ((deg / 15) % 24 + 24) % 24; const H = Math.floor(h), M = Math.floor((h - H) * 60), S = ((h - H) * 60 - M) * 60; return `${pad(H)}ʰ${pad(M)}ᵐ${S.toFixed(1).padStart(4, "0")}ˢ`; }
+  function fmtDec(deg) { if (deg == null) return "—"; const sg = deg < 0 ? "−" : "+"; const a = Math.abs(deg); const D = Math.floor(a), M = Math.floor((a - D) * 60), S = ((a - D) * 60 - M) * 60; return `${sg}${pad(D)}°${pad(M)}′${S.toFixed(0).padStart(2, "0")}″`; }
+  const fmtBand = (b) => b == null ? "—" : (typeof b === "number" ? `${b} ${t("мкм", "µm")}` : t(String(b), String(b).replaceAll("мкм", "µm")));
+  const frameLabel = (f) => preferences.language !== "ru" && f.date
+    ? new Intl.DateTimeFormat(preferences.language, {dateStyle: "medium", timeZone: "UTC"}).format(f.date)
+    : f.label;
+
+  /* ---------- Load ---------- */
+  let archiveMessage = () => "";
+  let loadError;
+  let selection = 0;
+  let fieldSearchRunning = false;
+  let queuedField = null;
+  let hasArchive = false;
+  function updateArchiveMessage(message) {
+    archiveMessage = message;
+    $("archive-status").textContent = message();
+  }
+
+  async function loadManifest(url = MANIFEST_URL) {
+    const request = ++selection;
+    const response = await fetch(url, { cache: "no-cache" });
+    if (!response.ok) throw new Error(response.status);
+    const manifest = normalise(await response.json(), url);
+    if (request !== selection) return;
+    if (state.frames.length) stop();
+    init(manifest);
+    if (url === MANIFEST_URL) hasArchive = response.headers.get("X-SkyShift") === "refresh";
+    $("sky-section").hidden = false;
+    $("archive-controls").hidden = !hasArchive || url !== MANIFEST_URL;
+  }
+
+  $("sky-example").onclick = async () => {
+    skyMap.select(269.6392,66.6331);
+    skyMap.setStatus(() => "");
+    try {
+      await loadManifest();
+      $("observations").scrollIntoView({block:"start"});
+    } catch {
+      skyMap.setStatus(() => t("Не удалось открыть пример.", "Could not open the example."));
+    }
+  };
+
+  $("sky-orion").onclick = async () => {
+    skyMap.select(83.822,-5.391);
+    skyMap.setStatus(() => "");
+    try {
+      await loadManifest("data/orion/manifest.json");
+      setMode("swipe");
+      $("observations").scrollIntoView({block:"start"});
+    } catch {
+      skyMap.setStatus(() => t("Не удалось открыть пример.", "Could not open the example."));
+    }
+  };
+
+  $("sky-search").onsubmit = (event) => {
+    event.preventDefault();
+    if (!hasArchive) {
+      skyMap.setStatus(() => t("Для поиска новых областей запустите сервер SkyShift. Готовые примеры доступны здесь.",
+        "Start the SkyShift server to search new fields. The examples are available here."));
+      return;
+    }
+    queuedField = {
+      request: ++selection,
+      query: new URLSearchParams({ra:$("sky-ra").value, dec:$("sky-dec").value}),
+    };
+    if (fieldSearchRunning) {
+      skyMap.setStatus(() => t("Новая точка выбрана. Поиск начнётся после текущего запроса.",
+        "New point selected. Its search will start after the current request."));
+    } else {
+      void runFieldSearch();
+    }
+  };
+
+  async function runFieldSearch() {
+    const {request, query} = queuedField;
+    queuedField = null;
+    if (request !== selection) return;
+    fieldSearchRunning = true;
+    skyMap.setStatus(() => t("Ищем и совмещаем снимки NASA/IPAC. Это может занять до двух минут.",
+      "Finding and aligning NASA/IPAC images. This may take up to two minutes."));
+    try {
+      let response;
+      const deadline = Date.now() + 160000;
+      do {
+        response = await fetch("/api/field?" + query, {
+          method:"POST", headers:{"X-SkyShift":"refresh"},
+        });
+        if (request !== selection) return;
+        if (response.status !== 409) break;
+        skyMap.setStatus(() => t("Ждём завершения текущего поиска. Новый запрос запустится автоматически.",
+          "Waiting for the current search. The new search will start automatically."));
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        if (request !== selection) return;
+      } while (Date.now() < deadline);
+      if (request !== selection) return;
+      if (response.status === 409) {
+        skyMap.setStatus(() => t("Сервер всё ещё занят. Повторите поиск или откройте готовый пример.",
+          "The server is still busy. Retry the search or open the example."));
+        return;
+      }
+      if (!response.ok) throw new Error(response.status);
+      const result = await response.json();
+      if (request !== selection) return;
+      if (result.state === "no_pair") {
+        skyMap.setStatus(() => t("Подходящую пару для этой точки найти не удалось. Попробуйте соседнюю область или готовый пример.",
+          "No comparable pair was found for this point. Try a nearby field or the example."));
+        return;
+      }
+      stop();
+      init(normalise(result.manifest));
+      $("archive-controls").hidden = true;
+      setMode("swipe");
+      skyMap.setStatus(() => `${t("Загружено кадров", "Frames loaded")}: ${state.frames.length}.`);
+      $("observations").scrollIntoView({block:"start"});
+    } catch {
+      if (request === selection) skyMap.setStatus(() => t("Архив сейчас недоступен. Попробуйте ещё раз или откройте готовый пример.",
+        "The archive is unavailable. Try again or open the example."));
+    } finally {
+      fieldSearchRunning = false;
+      if (queuedField) void runFieldSearch();
+    }
+  }
+
+  $("refresh-archive").onclick = async () => {
+    const request = selection;
+    const button = $("refresh-archive");
+    button.disabled = true;
+    updateArchiveMessage(() => t("Проверяем архив NASA/IPAC. Это может занять пару минут."));
+    try {
+      const response = await fetch("/api/refresh", {
+        method: "POST", headers: { "X-SkyShift": "refresh" },
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        updateArchiveMessage(() => t(result.error, response.status === 409
+          ? "An archive refresh is already running."
+          : "Could not refresh from the archive. Saved images are still available."));
+        return;
+      }
+      if (request === selection && result.state !== "unchanged") await loadManifest();
+      updateArchiveMessage(() => ({
+        updated: `${t("Подборка обновлена. Кадров", "Collection updated. Frames")}: ${result.count}.`,
+        cached: `${t("Архив проверен недавно. Кадров", "Archive checked recently. Frames")}: ${result.count}.`,
+        unchanged: t("Более свежих сопоставимых кадров не найдено."),
+      })[result.state]);
+    } catch {
+      updateArchiveMessage(() => t("Обновление недоступно. Сохранённые снимки можно просматривать."));
+    } finally {
+      button.disabled = false;
+    }
+  };
+
+  bindPreferences(() => {
+    skyMap.localise();
+    updateArchiveMessage(archiveMessage);
+    if (loadError) showEmpty(...loadError);
+    if (state.frames.length) {
+      updateObservationText();
+      syncPlay();
+      setCursorHud(null);
+      render();
+    }
+  });
+  skyMap.localise();
+  loadManifest().catch(() => showEmpty("Не удалось загрузить данные",
+    "Откройте страницу через локальный сервер."));
+
+  function showEmpty(title, description) {
+    loadError = [title, description];
+    const heading = document.createElement("b");
+    heading.textContent = t(title);
+    const contents = document.createElement("div");
+    contents.append(heading, t(description));
+    const empty = $("empty");
+    empty.replaceChildren(contents);
+    empty.hidden = false;
+  }
+
+  function init({ frames, meta }) {
+    if (!frames.length) return showEmpty("Нет кадров", "В manifest.json не найден список кадров.");
+    frames.sort((x, y) => (x.date && y.date) ? x.date - y.date : 0);
+    state.frames = frames; state.meta = meta; state.a = 0; state.b = frames.length - 1;
+    loadError = undefined;
+    $("empty").hidden = true;
+    state.grid = meta.grid || null;
+    updateObservationText();
+    const img = $("imgA");
+    img.onload = () => {
+      loadError = undefined;
+      $("empty").hidden = true;
+      if (state.iw !== img.naturalWidth || state.ih !== img.naturalHeight) {
+        state.iw = img.naturalWidth; state.ih = img.naturalHeight; fit();
+      }
+    };
+    img.onerror = () => showEmpty("Снимок не загрузился", "Выберите другой кадр.");
+    render(); setMode("single"); syncPlay();
+  }
+
+  function updateObservationText() {
+    const {frames, meta} = state;
+    const f0 = frames[0];
+    const ra = num(pick(meta, ["ra", "ra_deg", "center_ra"])) ?? f0.ra, dec = num(pick(meta, ["dec", "dec_deg", "center_dec"])) ?? f0.dec;
+    const band = pick(meta, ["band", "wavelength"]) ?? f0.band;
+    const title = pick(meta, ["title", "name", "target", "field", "object"]);
+    $("title").textContent = meta.target === "NGC 6543"
+      ? t(title, "Cat’s Eye Nebula (NGC 6543)")
+      : (title || (ra != null && dec != null
+        ? `${t("Область неба SPHEREx")} · RA ${ra.toFixed(3)}°, Dec ${dec.toFixed(3)}°`
+        : t("Область неба SPHEREx")));
+    $("limits").firstElementChild.hidden = meta.target !== "NGC 6543";
+    if (meta.description || meta.subtitle) $("subtitle").textContent = meta.target === "NGC 6543"
+      ? t(meta.description, "Repeated SPHEREx observations of the same field near the north ecliptic pole.")
+      : t(meta.description || meta.subtitle, "SPHEREx observations aligned to the same patch of sky.");
+    $("cRa").textContent = fmtRA(ra); $("cDec").textContent = fmtDec(dec); $("cBand").textContent = fmtBand(band);
+    $("cRa").title = ra != null ? `${ra}°` : ""; $("cDec").title = dec != null ? `${dec}°` : "";
+    const first = frames.find(f => f.date), last = [...frames].reverse().find(f => f.date);
+    const dt = first && last && first !== last ? last.date - first.date : null;
+    $("dtText").textContent = dt != null ? fmtDelta(dt) : t("небольшой промежуток времени");
+    if (meta.processing) $("procText").textContent = meta.target === "NGC 6543"
+      ? t(meta.processing, "Grayscale 520 × 520 pixel cutouts on a common TAN grid, north up. Each frame has its median background subtracted and uses a shared asinh stretch.")
+      : t(meta.processing, "520 × 520 pixels on a common TAN grid. Median background subtraction and a shared asinh stretch. Quality masks were not applied.");
+    buildMeta(meta, f0, ra, dec, band); buildFrames(); buildTimeline(); buildLinks(meta);
+  }
+
+  function buildMeta(meta, f0, ra, dec, band) {
+    const rows = [[t("Центр RA"), ra != null ? `${ra.toFixed(5)}°` : "—"], [t("Центр Dec"), dec != null ? `${dec.toFixed(5)}°` : "—"], [t("Диапазон"), fmtBand(band)], [t("Кадров"), state.frames.length]];
+    const skip = new Set(["frames", "images", "observations", "items", "title", "name", "description", "subtitle", "ra", "dec", "ra_deg", "dec_deg", "band", "wavelength", "links", "source", "source_url", "processing", "grid", "target"]);
+    for (const [k, v] of Object.entries(meta)) if (!skip.has(k) && (typeof v === "string" || typeof v === "number") && String(v).length < 80 && !/^https?:/.test(String(v))) rows.push([t(({ fov_arcmin: "Поле, угл. мин", pixel_arcsec: "Пиксель, угл. с", data_release: "Выпуск данных", detector: "Детектор" })[k] || k.replace(/_/g, " ")), String(v)]);
+    $("meta").innerHTML = rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(String(v))}</dd>`).join("");
+  }
+  function buildFrames() {
+    $("frames").innerHTML = state.frames.map((f, i) => `<div class="fcard" data-i="${i}" role="button" tabindex="0" aria-label="${t("Показать")} ${esc(frameLabel(f))}"><img src="${attr(f.src)}" alt="" loading="lazy"><span class="fbody"><span class="ttl">${esc(frameLabel(f))}<span class="badge" data-badge="${i}"></span></span><span class="meta">${fmtTime(f.date)} UTC${f.band != null ? " · " + esc(fmtBand(f.band)) : ""}</span></span><button class="setb" data-b="${i}" title="${t("Сравнивать с этим кадром (B)")} ">B</button></div>`).join("");
+    $("frames").querySelectorAll(".fcard").forEach(b => { b.onclick = (e) => { if (e.target.closest(".setb")) return; stop(); selectA(+b.dataset.i); }; b.onkeydown = (e) => { if (e.key === "Enter") { stop(); selectA(+b.dataset.i); } }; });
+    $("frames").querySelectorAll(".setb").forEach(b => b.onclick = () => { const i = +b.dataset.b; if (i === state.a) return; state.b = i; if (state.mode === "single") setMode("swipe"); else render(); });
+  }
+  function buildLinks(meta) {
+    const links = [];
+    const ml = pick(meta, ["links", "source", "source_url"]);
+    if (Array.isArray(ml)) ml.forEach(l => typeof l === "string" ? links.push(["Источник", l]) : links.push([l.label || l.title || l.name || "Источник", l.url || l.href]));
+    else if (typeof ml === "string") links.push(["Источник данных", ml]);
+    $("glinks").innerHTML = sourceLinks(links);
+  }
+  function buildTimeline() {
+    const fr = state.frames, ts = fr.map(f => f.date ? +f.date : null), valid = ts.filter(t => t != null);
+    const t0 = Math.min(...valid), t1 = Math.max(...valid), span = t1 - t0;
+    const pos = (i) => (valid.length === fr.length && span > 0) ? (ts[i] - t0) / span : (fr.length > 1 ? i / (fr.length - 1) : .5);
+    state.pos = fr.map((_, i) => pos(i));
+    const MIN = 0.045; for (let i = 1; i < state.pos.length; i++) if (state.pos[i] - state.pos[i - 1] < MIN) state.pos[i] = state.pos[i - 1] + MIN;
+    const over = state.pos[state.pos.length - 1]; if (over > 1) state.pos = state.pos.map(p => p / over);
+    const longSpan = span > 2 * 864e5; let lastLab = -1;
+    const track = $("track");
+    track.querySelectorAll(".tick").forEach(t => t.remove());
+    fr.forEach((f, i) => {
+      const b = document.createElement("button"); b.className = "tick" + (i === 0 ? " first" : "") + (i === fr.length - 1 ? " last" : ""); b.style.left = (state.pos[i] * 100) + "%";
+      const showLab = i === 0 || i === fr.length - 1 || state.pos[i] - lastLab > 0.12; if (showLab) lastLab = state.pos[i];
+      const lab = f.date ? (longSpan ? `${pad(f.date.getUTCDate())}.${pad(f.date.getUTCMonth() + 1)}` : fmtTime(f.date)) : esc(String(f.label));
+      b.innerHTML = `<span class="pin"></span><span class="t"${showLab ? "" : " hidden"}>${lab}</span>`;
+      b.setAttribute("aria-label", `${frameLabel(f)}, ${fmtDT(f.date, f.timeRaw)}`);
+      b.onclick = (e) => { e.stopPropagation(); stop(); selectA(i); };
+      track.appendChild(b);
+    });
+    track.onclick = (e) => { const r = track.getBoundingClientRect(), x = (e.clientX - r.left) / r.width; let best = 0; state.pos.forEach((p, i) => { if (Math.abs(p - x) < Math.abs(state.pos[best] - x)) best = i; }); stop(); selectA(best); };
+    $("tlDate").textContent = valid.length ? (fmtDate(new Date(t0)) === fmtDate(new Date(t1)) ? `${fmtDate(new Date(t0))} UTC` : `${fmtDate(new Date(t0))} → ${fmtDate(new Date(t1))} UTC`) : "UTC";
+    $("tlSpan").textContent = valid.length > 1 ? `${fr.length} ${t("кадров · охват", "frames · span")} ${fmtDelta(span)}` : "";
+  }
+
+  /* ---------- Selection & render ---------- */
+  function selectA(i) { const n = state.frames.length; state.a = (i + n) % n; if (state.b === state.a) state.b = (state.a + 1) % n; render(); }
+  function visibleIndex() { return state.mode === "blink" ? (state.blinkShow ? state.b : state.a) : state.a; }
+  function render() {
+    const fr = state.frames; if (!fr.length) return;
+    const show = visibleIndex(), A = fr[show], B = fr[state.b];
+    const imgA = $("imgA"), imgB = $("imgB");
+    if (imgA.getAttribute("src") !== A.src) imgA.src = A.src;
+    imgA.alt = `${frameLabel(A)}, ${fmtDT(A.date, A.timeRaw)}`;
+    if (state.mode === "swipe") { if (imgB.getAttribute("src") !== B.src) imgB.src = B.src; imgB.hidden = false; imgB.alt = frameLabel(B); } else imgB.hidden = true;
+    const letter = state.mode === "single" ? "" : (show === state.a ? "A · " : "B · ");
+    $("hudTL").innerHTML = state.mode === "swipe"
+      ? `<span class="frame-tag"><span class="sw"></span>A · ${fmtDate(fr[state.a].date)} · ${esc(fmtBand(fr[state.a].band))}</span><br><span class="frame-tag b"><span class="sw"></span>B · ${fmtDate(B.date)} · ${esc(fmtBand(B.band))}</span>`
+      : `<span class="k">${esc(t("КАДР"))} ${show + 1}/${fr.length}</span><br>${letter}${esc(fmtDT(A.date, A.timeRaw))}`;
+    const ref = fr[0].date, d = A.date && ref ? A.date - ref : null;
+    const dAB = state.mode !== "single" && fr[state.a].date && B.date ? B.date - fr[state.a].date : null;
+    $("hudTR").innerHTML = (dAB != null ? `<span class="k">A→B</span> ${fmtDelta(dAB)}` : `<span class="k">T+</span>${d != null ? (d === 0 ? t("0 с", "0 s") : fmtDelta(d)) : "—"}`) + `<br><span class="k">ZOOM</span> <span id="zv">${Math.round(state.scale * 100)}%</span>`;
+    if (!state.cursor) setCursorHud(null);
+    $("hudBR").innerHTML = `<span class="k">λ</span> ${esc(fmtBand(A.band ?? state.meta.band))}`;
+    $("flinks").innerHTML = `<div class="label" style="margin:14px 0 2px">${esc(t("Оригиналы показанного кадра"))} · ${esc(A.obsId || A.label)}</div>` + sourceLinks(A.links);
+    $("labA").textContent = `A ${fmtTime(fr[state.a].date)}`; $("labB").textContent = `B ${fmtTime(B.date)}`;
+    document.querySelectorAll(".tick").forEach((t, i) => { t.classList.toggle("on", i === show); t.classList.toggle("cmp", state.mode !== "single" && i === (show === state.a ? state.b : state.a)); });
+    $("fill").style.width = (state.pos ? state.pos[show] * 100 : 0) + "%";
+    document.querySelectorAll(".fcard").forEach((c, i) => { c.classList.toggle("on", i === show); c.classList.toggle("isa", i === state.a); c.classList.toggle("isb", state.mode !== "single" && i === state.b); });
+    document.querySelectorAll("[data-badge]").forEach(bg => { const i = +bg.dataset.badge; const isA = i === state.a, isB = state.mode !== "single" && i === state.b; bg.textContent = isA && state.mode !== "single" ? "A" : isB ? "B" : ""; bg.className = "badge" + (isB ? " b" : ""); bg.hidden = !bg.textContent; });
+    applySplit();
+  }
+
+  /* ---------- Modes & playback ---------- */
+  function setMode(m) {
+    state.mode = m; state.blinkShow = 0;
+    document.querySelectorAll("[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode === m));
+    $("viewerWrap").classList.toggle("mode-swipe", m === "swipe");
+    $("play").disabled = m === "swipe" || state.frames.length < 2;
+    if (m === "swipe") stop(); else if (m === "blink" && !state.playing) start();
+    render();
+  }
+  const interval = () => 900 / state.speed;
+  function tick() { if (state.mode === "blink") state.blinkShow ^= 1; else state.a = (state.a + 1) % state.frames.length; render(); }
+  function start() { if (state.frames.length < 2 || state.mode === "swipe") return; state.playing = true; clearInterval(state.timer); state.timer = setInterval(tick, interval()); syncPlay(); }
+  function stop() { state.playing = false; clearInterval(state.timer); state.timer = null; if (state.mode === "blink") state.blinkShow = 0; syncPlay(); render(); }
+  function syncPlay() {
+    const p = state.playing; $("play").setAttribute("aria-pressed", p);
+    $("playTxt").textContent = p ? t("Пауза") : (state.mode === "blink" ? t("Мигать") : t("Проиграть"));
+    $("playIco").innerHTML = p ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M7 5l12 7-12 7z"/>';
+    $("statusDot").classList.toggle("idle", !p);
+    $("statusText").textContent = p ? (state.mode === "blink" ? `${t("Мигание")} · ${state.speed}×` : `${t("Проигрывание")} · ${state.speed}×`) : t("Пауза");
+  }
+  document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  $("play").onclick = () => state.playing ? stop() : start();
+  $("prev").onclick = () => { stop(); selectA(state.a - 1); };
+  $("next").onclick = () => { stop(); selectA(state.a + 1); };
+  $("speedSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
+    state.speed = +b.dataset.speed; $("speedSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    if (state.playing) start();
+  });
+
+  /* ---------- Zoom & pan ---------- */
+  const viewer = $("viewer"), world = $("world");
+  function applyTransform() {
+    world.style.transform = `translate(${state.tx}px,${state.ty}px) scale(${state.scale})`;
+    world.classList.toggle("pixel", state.scale >= 2);
+    const zv = $("zv"); if (zv) zv.textContent = Math.round(state.scale * 100) + "%";
+    applySplit();
+  }
+  function fit() {
+    if (!state.iw) return; const r = viewer.getBoundingClientRect();
+    const s = Math.min(r.width / state.iw, r.height / state.ih); state.minScale = s * .5;
+    state.scale = s; state.tx = (r.width - state.iw * s) / 2; state.ty = (r.height - state.ih * s) / 2;
+    world.style.width = state.iw + "px"; world.style.height = state.ih + "px"; applyTransform();
+  }
+  function zoomAt(f, cx, cy) {
+    const ns = Math.max(state.minScale, Math.min(40, state.scale * f)); const k = ns / state.scale;
+    state.tx = cx - (cx - state.tx) * k; state.ty = cy - (cy - state.ty) * k; state.scale = ns; applyTransform();
+  }
+  const center = () => { const r = viewer.getBoundingClientRect(); return [r.width / 2, r.height / 2]; };
+  $("zIn").onclick = () => zoomAt(1.6, ...center());
+  $("zOut").onclick = () => zoomAt(1 / 1.6, ...center());
+  $("zFit").onclick = fit;
+  viewer.addEventListener("wheel", e => { e.preventDefault(); const r = viewer.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * .0015), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+  viewer.addEventListener("dblclick", e => { const r = viewer.getBoundingClientRect(); zoomAt(2, e.clientX - r.left, e.clientY - r.top); });
+  function setCursorHud(rd) {
+    $("hudBL").innerHTML = rd ? `<span class="k">${t("КУРСОР")}</span><br><span class="k">RA</span> ${rd[0].toFixed(4)}° <span class="k">DEC</span> ${rd[1] >= 0 ? "+" : "−"}${Math.abs(rd[1]).toFixed(4)}°`
+      : `<span class="k">${t("ЦЕНТР")}</span><br><span class="k">RA</span> ${$("cRa").textContent} <span class="k">DEC</span> ${$("cDec").textContent}`;
+  }
+  function pix2sky(px, py) { // gnomonic (TAN) inverse for the common grid; image row 0 = north
+    const g = state.grid; if (!g) return null; const D = Math.PI / 180, sc = g.cdelt_arcsec / 3600 * D;
+    const x = -(px + .5 - g.crpix[0]) * sc, y = ((g.height - py - .5) - (g.height - g.crpix[1])) * sc;
+    const a0 = g.crval[0] * D, d0 = g.crval[1] * D, rho = Math.hypot(x, y), c = Math.atan(rho);
+    if (rho === 0) return [g.crval[0], g.crval[1]];
+    const dec = Math.asin(Math.cos(c) * Math.sin(d0) + y * Math.sin(c) * Math.cos(d0) / rho);
+    const ra = a0 + Math.atan2(x * Math.sin(c), rho * Math.cos(d0) * Math.cos(c) - y * Math.sin(d0) * Math.sin(c));
+    return [((ra / D) % 360 + 360) % 360, dec / D];
+  }
+  viewer.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse" || !state.grid) return; const r = viewer.getBoundingClientRect();
+    const px = (e.clientX - r.left - state.tx) / state.scale, py = (e.clientY - r.top - state.ty) / state.scale;
+    state.cursor = px >= 0 && py >= 0 && px < state.iw && py < state.ih; setCursorHud(state.cursor ? pix2sky(px, py) : null);
+  });
+  viewer.addEventListener("pointerleave", () => { state.cursor = false; setCursorHud(null); });
+  const ptrs = new Map(); let pinch = null;
+  viewer.addEventListener("pointerdown", e => {
+    if (e.target.closest(".zoombar,.grip")) return;
+    viewer.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]); viewer.classList.add("dragging");
+    if (ptrs.size === 2) { const [p, q] = [...ptrs.values()]; pinch = { d: Math.hypot(p[0] - q[0], p[1] - q[1]) }; }
+  });
+  viewer.addEventListener("pointermove", e => {
+    if (!ptrs.has(e.pointerId)) return; const prev = ptrs.get(e.pointerId); ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+    if (ptrs.size === 2 && pinch) { const [p, q] = [...ptrs.values()]; const d = Math.hypot(p[0] - q[0], p[1] - q[1]); const r = viewer.getBoundingClientRect(); zoomAt(d / pinch.d, (p[0] + q[0]) / 2 - r.left, (p[1] + q[1]) / 2 - r.top); pinch.d = d; }
+    else if (ptrs.size === 1) { state.tx += e.clientX - prev[0]; state.ty += e.clientY - prev[1]; applyTransform(); }
+  });
+  const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) viewer.classList.remove("dragging"); };
+  viewer.addEventListener("pointerup", up); viewer.addEventListener("pointercancel", up);
+  new ResizeObserver(() => fit()).observe(viewer);
+
+  /* ---------- Swipe slider (screen-space) ---------- */
+  function applySplit() {
+    const r = viewer.getBoundingClientRect(), x = r.width * state.split; $("split").style.left = x + "px";
+    if (state.mode !== "swipe" || !state.iw) return;
+    const ix = (x - state.tx) / state.scale, pct = Math.max(0, Math.min(100, ix / state.iw * 100));
+    $("imgB").style.clipPath = `inset(0 0 0 ${pct}%)`; $("grip").setAttribute("aria-valuenow", Math.round(state.split * 100));
+  }
+  const grip = $("grip");
+  grip.addEventListener("pointerdown", e => { e.stopPropagation(); grip.setPointerCapture(e.pointerId); grip.dataset.drag = 1; });
+  grip.addEventListener("pointermove", e => { if (!grip.dataset.drag) return; const r = viewer.getBoundingClientRect(); state.split = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); applySplit(); });
+  grip.addEventListener("pointerup", () => delete grip.dataset.drag); grip.addEventListener("pointercancel", () => delete grip.dataset.drag);
+  grip.addEventListener("keydown", e => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); e.stopPropagation(); state.split = Math.max(0, Math.min(1, state.split + (e.key === "ArrowLeft" ? -.05 : .05))); applySplit(); } });
+
+  /* ---------- Keyboard ---------- */
+  document.addEventListener("keydown", e => {
+    if (e.defaultPrevented || !state.frames.length || e.target.closest("input,select,textarea,button,a,[role=button],[role=slider]")) return;
+    const k = e.key;
+    if (k === " ") { e.preventDefault(); state.playing ? stop() : start(); }
+    else if (k === "ArrowRight") { stop(); selectA(state.a + 1); } else if (k === "ArrowLeft") { stop(); selectA(state.a - 1); }
+    else if (k === "1") setMode("single"); else if (k === "2") setMode("blink"); else if (k === "3") setMode("swipe");
+    else if (k === "+" || k === "=") zoomAt(1.6, ...center()); else if (k === "-") zoomAt(1 / 1.6, ...center()); else if (k === "0") fit();
+  });
+
+  function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]); }
+  const attr = esc;
+  function sourceLinks(links) {
+    return links.flatMap(([label, value]) => {
+      try {
+        const url = new URL(value);
+        if (url.protocol !== "https:") return [];
+        return [`<a href="${attr(url.href)}" target="_blank" rel="noopener"><span>${esc(t(label))}</span><span>↗</span></a>`];
+      } catch {
+        return [];
+      }
+    }).join("");
+  }
+})();
+</script>
+</body>
+</html>

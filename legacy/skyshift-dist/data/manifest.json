@@ -1,0 +1,315 @@
+{
+  "title": "Туманность Кошачий Глаз (NGC 6543)",
+  "target": "NGC 6543",
+  "ra": 269.6392,
+  "dec": 66.6331,
+  "band": "0.75–1.10 мкм",
+  "fov_arcmin": 53.3,
+  "pixel_arcsec": 6.15,
+  "description": "Один и тот же участок неба у северного полюса эклиптики. Снимки SPHEREx совмещены по небесным координатам.",
+  "processing": "Поле 520×520 пикселей, общая сетка TAN (север сверху), вычет медианного фона и общая шкала asinh. Маски качества не применялись.",
+  "links": [
+    {
+      "label": "SPHEREx: доступ к данным (IRSA)",
+      "url": "https://irsa.ipac.caltech.edu/spherex-archive-documentation/spherex-data-access/"
+    },
+    {
+      "label": "SPHEREx Data Explorer (IRSA)",
+      "url": "https://irsa.ipac.caltech.edu/applications/spherex"
+    },
+    {
+      "label": "Облачная копия архива (AWS Open Data)",
+      "url": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/index.html"
+    }
+  ],
+  "data_release": "SPHEREx DR1 + QR3, Level 2 (NASA/IPAC IRSA)",
+  "frames": [
+    {
+      "file": "frame01.png",
+      "label": "28 апр 2025",
+      "date_obs": "2025-04-28T22:55:18.042Z",
+      "obs_id": "2025W18_1B_0065_1",
+      "detector": 1,
+      "band": "0.899 мкм",
+      "wavelength_um": 0.899,
+      "bandwidth_um": 0.0234,
+      "target_pixel": [
+        1278.4,
+        1054.1
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_1D1_spx_l2b-v27-2026-196.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_1D1_spx_l2b-v27-2026-196.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_1D1_spx_l2b-v27-2026-196.fits",
+      "fits_key": "dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_1D1_spx_l2b-v27-2026-196.fits"
+    },
+    {
+      "file": "frame02.png",
+      "label": "28 апр 2025",
+      "date_obs": "2025-04-28T22:57:26.972Z",
+      "obs_id": "2025W18_1B_0065_2",
+      "detector": 1,
+      "band": "0.921 мкм",
+      "wavelength_um": 0.9206,
+      "bandwidth_um": 0.0239,
+      "target_pixel": [
+        1277.2,
+        938.9
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_2D1_spx_l2b-v27-2026-196.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_2D1_spx_l2b-v27-2026-196.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_2D1_spx_l2b-v27-2026-196.fits",
+      "fits_key": "dr1/level2/2025W18_1B/l2b-v27-2026-196/1/level2_2025W18_1B_0065_2D1_spx_l2b-v27-2026-196.fits"
+    },
+    {
+      "file": "frame03.png",
+      "label": "28 мая 2025",
+      "date_obs": "2025-05-28T12:11:53.676Z",
+      "obs_id": "2025W22_1B_0430_1",
+      "detector": 1,
+      "band": "0.894 мкм",
+      "wavelength_um": 0.8942,
+      "bandwidth_um": 0.0232,
+      "target_pixel": [
+        1240.1,
+        1080.3
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W22_1B/l2b-v27-2026-199/1/level2_2025W22_1B_0430_1D1_spx_l2b-v27-2026-199.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W22_1B/l2b-v27-2026-199/1/level2_2025W22_1B_0430_1D1_spx_l2b-v27-2026-199.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W22_1B/l2b-v27-2026-199/1/level2_2025W22_1B_0430_1D1_spx_l2b-v27-2026-199.fits",
+      "fits_key": "dr1/level2/2025W22_1B/l2b-v27-2026-199/1/level2_2025W22_1B_0430_1D1_spx_l2b-v27-2026-199.fits"
+    },
+    {
+      "file": "frame04.png",
+      "label": "30 июн 2025",
+      "date_obs": "2025-06-30T07:41:01.848Z",
+      "obs_id": "2025W27_1A_0067_1",
+      "detector": 1,
+      "band": "0.893 мкм",
+      "wavelength_um": 0.8932,
+      "bandwidth_um": 0.023,
+      "target_pixel": [
+        1190.5,
+        1084.7
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0067_1D1_spx_l2b-v27-2026-214.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0067_1D1_spx_l2b-v27-2026-214.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0067_1D1_spx_l2b-v27-2026-214.fits",
+      "fits_key": "dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0067_1D1_spx_l2b-v27-2026-214.fits"
+    },
+    {
+      "file": "frame05.png",
+      "label": "1 июл 2025",
+      "date_obs": "2025-07-01T21:14:56.346Z",
+      "obs_id": "2025W27_1A_0363_1",
+      "detector": 1,
+      "band": "0.915 мкм",
+      "wavelength_um": 0.9147,
+      "bandwidth_um": 0.0236,
+      "target_pixel": [
+        1179.7,
+        968.1
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0363_1D1_spx_l2b-v27-2026-214.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0363_1D1_spx_l2b-v27-2026-214.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0363_1D1_spx_l2b-v27-2026-214.fits",
+      "fits_key": "dr1/level2/2025W27_1A/l2b-v27-2026-214/1/level2_2025W27_1A_0363_1D1_spx_l2b-v27-2026-214.fits"
+    },
+    {
+      "file": "frame06.png",
+      "label": "25 авг 2025",
+      "date_obs": "2025-08-25T12:06:45.139Z",
+      "obs_id": "2025W35_1A_0107_1",
+      "detector": 1,
+      "band": "0.883 мкм",
+      "wavelength_um": 0.8829,
+      "bandwidth_um": 0.0225,
+      "target_pixel": [
+        1123.2,
+        1140.9
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W35_1A/l2b_retry-v27-2026-230/1/level2_2025W35_1A_0107_1D1_spx_l2b_retry-v27-2026-230.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W35_1A/l2b_retry-v27-2026-230/1/level2_2025W35_1A_0107_1D1_spx_l2b_retry-v27-2026-230.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W35_1A/l2b_retry-v27-2026-230/1/level2_2025W35_1A_0107_1D1_spx_l2b_retry-v27-2026-230.fits",
+      "fits_key": "dr1/level2/2025W35_1A/l2b_retry-v27-2026-230/1/level2_2025W35_1A_0107_1D1_spx_l2b_retry-v27-2026-230.fits"
+    },
+    {
+      "file": "frame07.png",
+      "label": "29 сен 2025",
+      "date_obs": "2025-09-29T03:30:58.700Z",
+      "obs_id": "2025W40_1A_0036_1",
+      "detector": 1,
+      "band": "0.912 мкм",
+      "wavelength_um": 0.9122,
+      "bandwidth_um": 0.0234,
+      "target_pixel": [
+        1110.5,
+        979.9
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W40_1A/l2b-v27-2026-239/1/level2_2025W40_1A_0036_1D1_spx_l2b-v27-2026-239.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W40_1A/l2b-v27-2026-239/1/level2_2025W40_1A_0036_1D1_spx_l2b-v27-2026-239.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W40_1A/l2b-v27-2026-239/1/level2_2025W40_1A_0036_1D1_spx_l2b-v27-2026-239.fits",
+      "fits_key": "dr1/level2/2025W40_1A/l2b-v27-2026-239/1/level2_2025W40_1A_0036_1D1_spx_l2b-v27-2026-239.fits"
+    },
+    {
+      "file": "frame08.png",
+      "label": "16 окт 2025",
+      "date_obs": "2025-10-16T16:03:07.393Z",
+      "obs_id": "2025W42_2A_0042_1",
+      "detector": 1,
+      "band": "0.896 мкм",
+      "wavelength_um": 0.8963,
+      "bandwidth_um": 0.023,
+      "target_pixel": [
+        1121.7,
+        1066.4
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W42_2A/l2b-v27-2026-243/1/level2_2025W42_2A_0042_1D1_spx_l2b-v27-2026-243.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W42_2A/l2b-v27-2026-243/1/level2_2025W42_2A_0042_1D1_spx_l2b-v27-2026-243.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W42_2A/l2b-v27-2026-243/1/level2_2025W42_2A_0042_1D1_spx_l2b-v27-2026-243.fits",
+      "fits_key": "dr1/level2/2025W42_2A/l2b-v27-2026-243/1/level2_2025W42_2A_0042_1D1_spx_l2b-v27-2026-243.fits"
+    },
+    {
+      "file": "frame09.png",
+      "label": "24 ноя 2025",
+      "date_obs": "2025-11-24T21:58:11.164Z",
+      "obs_id": "2025W48_1A_0193_1",
+      "detector": 1,
+      "band": "0.928 мкм",
+      "wavelength_um": 0.9279,
+      "bandwidth_um": 0.0239,
+      "target_pixel": [
+        1218.5,
+        899.3
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W48_1A/l2b-v27-2026-208/1/level2_2025W48_1A_0193_1D1_spx_l2b-v27-2026-208.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W48_1A/l2b-v27-2026-208/1/level2_2025W48_1A_0193_1D1_spx_l2b-v27-2026-208.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W48_1A/l2b-v27-2026-208/1/level2_2025W48_1A_0193_1D1_spx_l2b-v27-2026-208.fits",
+      "fits_key": "dr1/level2/2025W48_1A/l2b-v27-2026-208/1/level2_2025W48_1A_0193_1D1_spx_l2b-v27-2026-208.fits"
+    },
+    {
+      "file": "frame10.png",
+      "label": "29 дек 2025",
+      "date_obs": "2025-12-29T08:14:47.683Z",
+      "obs_id": "2026W01_1A_0076_1",
+      "detector": 1,
+      "band": "0.903 мкм",
+      "wavelength_um": 0.9028,
+      "bandwidth_um": 0.0236,
+      "target_pixel": [
+        1264.2,
+        1032.7
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0076_1D1_spx_l2b-v27-2026-211.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0076_1D1_spx_l2b-v27-2026-211.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0076_1D1_spx_l2b-v27-2026-211.fits",
+      "fits_key": "dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0076_1D1_spx_l2b-v27-2026-211.fits"
+    },
+    {
+      "file": "frame11.png",
+      "label": "1 янв 2026",
+      "date_obs": "2026-01-01T01:27:24.597Z",
+      "obs_id": "2026W01_1A_0631_1",
+      "detector": 1,
+      "band": "0.950 мкм",
+      "wavelength_um": 0.9495,
+      "bandwidth_um": 0.0242,
+      "target_pixel": [
+        1215.1,
+        785.8
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0631_1D1_spx_l2b-v27-2026-211.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0631_1D1_spx_l2b-v27-2026-211.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0631_1D1_spx_l2b-v27-2026-211.fits",
+      "fits_key": "dr1/level2/2026W01_1A/l2b-v27-2026-211/1/level2_2026W01_1A_0631_1D1_spx_l2b-v27-2026-211.fits"
+    },
+    {
+      "file": "frame12.png",
+      "label": "21 фев 2026",
+      "date_obs": "2026-02-21T23:59:21.388Z",
+      "obs_id": "2026W08_2A_0474_1",
+      "detector": 1,
+      "band": "0.897 мкм",
+      "wavelength_um": 0.8969,
+      "bandwidth_um": 0.0233,
+      "target_pixel": [
+        1291.0,
+        1066.3
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W08_2A/l2b-v27-2026-227/1/level2_2026W08_2A_0474_1D1_spx_l2b-v27-2026-227.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W08_2A/l2b-v27-2026-227/1/level2_2026W08_2A_0474_1D1_spx_l2b-v27-2026-227.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W08_2A/l2b-v27-2026-227/1/level2_2026W08_2A_0474_1D1_spx_l2b-v27-2026-227.fits",
+      "fits_key": "dr1/level2/2026W08_2A/l2b-v27-2026-227/1/level2_2026W08_2A_0474_1D1_spx_l2b-v27-2026-227.fits"
+    },
+    {
+      "file": "frame13.png",
+      "label": "3 мар 2026",
+      "date_obs": "2026-03-03T13:40:02.346Z",
+      "obs_id": "2026W10_1A_0309_1",
+      "detector": 1,
+      "band": "0.889 мкм",
+      "wavelength_um": 0.8891,
+      "bandwidth_um": 0.023,
+      "target_pixel": [
+        1302.1,
+        1110.4
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W10_1A/l2b-v27-2026-229/1/level2_2026W10_1A_0309_1D1_spx_l2b-v27-2026-229.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W10_1A/l2b-v27-2026-229/1/level2_2026W10_1A_0309_1D1_spx_l2b-v27-2026-229.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W10_1A/l2b-v27-2026-229/1/level2_2026W10_1A_0309_1D1_spx_l2b-v27-2026-229.fits",
+      "fits_key": "dr1/level2/2026W10_1A/l2b-v27-2026-229/1/level2_2026W10_1A_0309_1D1_spx_l2b-v27-2026-229.fits"
+    },
+    {
+      "file": "frame14.png",
+      "label": "21 апр 2026",
+      "date_obs": "2026-04-21T20:29:31.882Z",
+      "obs_id": "2026W17_1B_0343_1",
+      "detector": 1,
+      "band": "0.915 мкм",
+      "wavelength_um": 0.9148,
+      "bandwidth_um": 0.0237,
+      "target_pixel": [
+        1235.6,
+        968.3
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W17_1B/l2b-v27-2026-242/1/level2_2026W17_1B_0343_1D1_spx_l2b-v27-2026-242.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W17_1B/l2b-v27-2026-242/1/level2_2026W17_1B_0343_1D1_spx_l2b-v27-2026-242.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W17_1B/l2b-v27-2026-242/1/level2_2026W17_1B_0343_1D1_spx_l2b-v27-2026-242.fits",
+      "fits_key": "dr1/level2/2026W17_1B/l2b-v27-2026-242/1/level2_2026W17_1B_0343_1D1_spx_l2b-v27-2026-242.fits"
+    },
+    {
+      "file": "frame15.png",
+      "label": "23 сен 2026",
+      "date_obs": "2026-09-23T00:27:01.672Z",
+      "obs_id": "2026W39_1A_0456_1",
+      "detector": 1,
+      "band": "0.923 мкм",
+      "wavelength_um": 0.9231,
+      "bandwidth_um": 0.0237,
+      "target_pixel": [
+        1144.0,
+        923.1
+      ],
+      "link": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W39_1A/l2b-v27-2026-268/1/level2_2026W39_1A_0456_1D1_spx_l2b-v27-2026-268.fits?center=269.6392,66.6331&size=0.89",
+      "link_full": "https://irsa.ipac.caltech.edu/ibe/data/spherex/qr3/level2/2026W39_1A/l2b-v27-2026-268/1/level2_2026W39_1A_0456_1D1_spx_l2b-v27-2026-268.fits",
+      "link_aws": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/qr3/level2/2026W39_1A/l2b-v27-2026-268/1/level2_2026W39_1A_0456_1D1_spx_l2b-v27-2026-268.fits",
+      "fits_key": "qr3/level2/2026W39_1A/l2b-v27-2026-268/1/level2_2026W39_1A_0456_1D1_spx_l2b-v27-2026-268.fits"
+    }
+  ],
+  "grid": {
+    "projection": "TAN",
+    "crval": [
+      269.6392,
+      66.6331
+    ],
+    "crpix": [
+      260.5,
+      260.5
+    ],
+    "cdelt_arcsec": 6.15,
+    "width": 520,
+    "height": 520,
+    "north_up": true,
+    "east_left": true
+  },
+  "detector": "1 (SWIR)"
+}

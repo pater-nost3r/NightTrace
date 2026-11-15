@@ -1,0 +1,615 @@
+{
+ "state": "ready",
+ "example": "orion",
+ "field": {
+  "ra": 83.822,
+  "dec": -5.391
+ },
+ "comparison": "time",
+ "title": {
+  "ru": "Туманность Ориона (M42)",
+  "en": "Orion Nebula (M42)"
+ },
+ "summary": {
+  "ru": "Два визита с интервалом в полгода.",
+  "en": "Two visits half a year apart."
+ },
+ "frames": [
+  {
+   "id": "dr1:l2b-v27-2026-235:2025W37_1A_0033_2:1",
+   "obsid": "2025W37_1A_0033_2",
+   "release": "DR1",
+   "processing_version": "l2b-v27-2026-235",
+   "detector": 1,
+   "date_avg": "2025-09-08T03:20:22.901Z",
+   "date_beg": "2025-09-08T03:19:25.342Z",
+   "mjd_avg": 60926.139153944,
+   "exposure_s": 113.5826,
+   "psf_fwhm_arcsec": 7.530770327317724,
+   "l2_dqa": "Pass",
+   "bunit": "MJy / sr",
+   "astrometry_solved": true,
+   "astrometry_nstars": 2683.0,
+   "links": {
+    "irsa_cutout": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W37_1A/l2b-v27-2026-235/1/level2_2025W37_1A_0033_2D1_spx_l2b-v27-2026-235.fits?center=83.82200,-5.39100&size=0.8747",
+    "irsa_file": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2025W37_1A/l2b-v27-2026-235/1/level2_2025W37_1A_0033_2D1_spx_l2b-v27-2026-235.fits",
+    "aws_file": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2025W37_1A/l2b-v27-2026-235/1/level2_2025W37_1A_0033_2D1_spx_l2b-v27-2026-235.fits"
+   },
+   "fits_key": "dr1/level2/2025W37_1A/l2b-v27-2026-235/1/level2_2025W37_1A_0033_2D1_spx_l2b-v27-2026-235.fits",
+   "coverage": 1.0,
+   "valid_fraction": 0.99,
+   "wavelength_um": 1.0512,
+   "bandwidth_um": 0.0282,
+   "wavelength_range_um": [
+    0.9977,
+    1.1083
+   ],
+   "flag_pixels": {
+    "bad": 2736,
+    "transient": 2812,
+    "artifact": 16259,
+    "source": 262144
+   },
+   "rows_read": [
+    37,
+    589
+   ],
+   "wave_grid": {
+    "size": 9,
+    "pixels": [
+     0.0,
+     63.875,
+     127.75,
+     191.625,
+     255.5,
+     319.375,
+     383.25,
+     447.125,
+     511.0
+    ],
+    "wavelength_um": [
+     [
+      0.9986,
+      0.9981,
+      0.9979,
+      0.9978,
+      0.9977,
+      0.9976,
+      0.9978,
+      0.998,
+      0.9983
+     ],
+     [
+      1.0117,
+      1.0112,
+      1.0109,
+      1.0108,
+      1.0107,
+      1.0106,
+      1.0107,
+      1.011,
+      1.0112
+     ],
+     [
+      1.0252,
+      1.0247,
+      1.0244,
+      1.0243,
+      1.0242,
+      1.0241,
+      1.0242,
+      1.0245,
+      1.0247
+     ],
+     [
+      1.0387,
+      1.0382,
+      1.038,
+      1.0378,
+      1.0377,
+      1.0376,
+      1.0378,
+      1.038,
+      1.0383
+     ],
+     [
+      1.0522,
+      1.0517,
+      1.0515,
+      1.0513,
+      1.0512,
+      1.0511,
+      1.0513,
+      1.0516,
+      1.0519
+     ],
+     [
+      1.066,
+      1.0654,
+      1.0651,
+      1.065,
+      1.0648,
+      1.0646,
+      1.0649,
+      1.0652,
+      1.0655
+     ],
+     [
+      1.0802,
+      1.0796,
+      1.0794,
+      1.0792,
+      1.079,
+      1.0789,
+      1.0791,
+      1.0793,
+      1.0796
+     ],
+     [
+      1.0944,
+      1.0938,
+      1.0936,
+      1.0934,
+      1.0933,
+      1.0932,
+      1.0934,
+      1.0936,
+      1.0938
+     ],
+     [
+      1.1086,
+      1.108,
+      1.1078,
+      1.1077,
+      1.1075,
+      1.1074,
+      1.1076,
+      1.1079,
+      1.1081
+     ]
+    ],
+    "bandwidth_um": [
+     [
+      0.0264,
+      0.0263,
+      0.0263,
+      0.0263,
+      0.0262,
+      0.0262,
+      0.0262,
+      0.0263,
+      0.0264
+     ],
+     [
+      0.0269,
+      0.0269,
+      0.0269,
+      0.0268,
+      0.0268,
+      0.0267,
+      0.0267,
+      0.0268,
+      0.0268
+     ],
+     [
+      0.0272,
+      0.0272,
+      0.0273,
+      0.0272,
+      0.0272,
+      0.0272,
+      0.0272,
+      0.0273,
+      0.0273
+     ],
+     [
+      0.0276,
+      0.0276,
+      0.0277,
+      0.0277,
+      0.0277,
+      0.0277,
+      0.0277,
+      0.0277,
+      0.0277
+     ],
+     [
+      0.0279,
+      0.028,
+      0.0281,
+      0.0281,
+      0.0282,
+      0.0282,
+      0.0282,
+      0.0282,
+      0.0282
+     ],
+     [
+      0.0283,
+      0.0284,
+      0.0285,
+      0.0285,
+      0.0286,
+      0.0287,
+      0.0287,
+      0.0286,
+      0.0286
+     ],
+     [
+      0.0287,
+      0.0288,
+      0.0289,
+      0.029,
+      0.0291,
+      0.0292,
+      0.0291,
+      0.029,
+      0.0289
+     ],
+     [
+      0.0292,
+      0.0292,
+      0.0293,
+      0.0294,
+      0.0296,
+      0.0297,
+      0.0295,
+      0.0293,
+      0.0292
+     ],
+     [
+      0.0296,
+      0.0297,
+      0.0298,
+      0.0299,
+      0.03,
+      0.0301,
+      0.0299,
+      0.0297,
+      0.0294
+     ]
+    ]
+   },
+   "file": "data/examples/orion/frames/2025W37_1A_0033_2_D1.ntf"
+  },
+  {
+   "id": "dr1:l2b-v27-2026-234:2026W11_2A_0519_1:1",
+   "obsid": "2026W11_2A_0519_1",
+   "release": "DR1",
+   "processing_version": "l2b-v27-2026-234",
+   "detector": 1,
+   "date_avg": "2026-03-15T03:09:27.392Z",
+   "date_beg": "2026-03-15T03:08:29.833Z",
+   "mjd_avg": 61114.131567034,
+   "exposure_s": 113.5826,
+   "psf_fwhm_arcsec": 7.530770327317724,
+   "l2_dqa": "Pass",
+   "bunit": "MJy / sr",
+   "astrometry_solved": true,
+   "astrometry_nstars": 2718.0,
+   "links": {
+    "irsa_cutout": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W11_2A/l2b-v27-2026-234/1/level2_2026W11_2A_0519_1D1_spx_l2b-v27-2026-234.fits?center=83.82200,-5.39100&size=0.8747",
+    "irsa_file": "https://irsa.ipac.caltech.edu/ibe/data/spherex/dr1/level2/2026W11_2A/l2b-v27-2026-234/1/level2_2026W11_2A_0519_1D1_spx_l2b-v27-2026-234.fits",
+    "aws_file": "https://nasa-irsa-spherex.s3.us-east-1.amazonaws.com/dr1/level2/2026W11_2A/l2b-v27-2026-234/1/level2_2026W11_2A_0519_1D1_spx_l2b-v27-2026-234.fits"
+   },
+   "fits_key": "dr1/level2/2026W11_2A/l2b-v27-2026-234/1/level2_2026W11_2A_0519_1D1_spx_l2b-v27-2026-234.fits",
+   "coverage": 1.0,
+   "valid_fraction": 0.989,
+   "wavelength_um": 1.0287,
+   "bandwidth_um": 0.0276,
+   "wavelength_range_um": [
+    0.9759,
+    1.0859
+   ],
+   "flag_pixels": {
+    "bad": 2878,
+    "transient": 3035,
+    "artifact": 20526,
+    "source": 262144
+   },
+   "rows_read": [
+    130,
+    657
+   ],
+   "wave_grid": {
+    "size": 9,
+    "pixels": [
+     0.0,
+     63.875,
+     127.75,
+     191.625,
+     255.5,
+     319.375,
+     383.25,
+     447.125,
+     511.0
+    ],
+    "wavelength_um": [
+     [
+      1.0837,
+      1.0837,
+      1.0838,
+      1.084,
+      1.0841,
+      1.0846,
+      1.0851,
+      1.0856,
+      1.0862
+     ],
+     [
+      1.0695,
+      1.0695,
+      1.0696,
+      1.0697,
+      1.0699,
+      1.0703,
+      1.0708,
+      1.0714,
+      1.0719
+     ],
+     [
+      1.0555,
+      1.0554,
+      1.0555,
+      1.0556,
+      1.0557,
+      1.0561,
+      1.0566,
+      1.0572,
+      1.0577
+     ],
+     [
+      1.0419,
+      1.0419,
+      1.042,
+      1.0421,
+      1.0422,
+      1.0426,
+      1.0431,
+      1.0436,
+      1.0442
+     ],
+     [
+      1.0284,
+      1.0284,
+      1.0285,
+      1.0286,
+      1.0287,
+      1.0291,
+      1.0296,
+      1.0301,
+      1.0307
+     ],
+     [
+      1.0149,
+      1.0149,
+      1.0149,
+      1.015,
+      1.0151,
+      1.0155,
+      1.0161,
+      1.0166,
+      1.0171
+     ],
+     [
+      1.0016,
+      1.0015,
+      1.0016,
+      1.0017,
+      1.0017,
+      1.0021,
+      1.0026,
+      1.0031,
+      1.0037
+     ],
+     [
+      0.9887,
+      0.9887,
+      0.9888,
+      0.9888,
+      0.9889,
+      0.9893,
+      0.9898,
+      0.9903,
+      0.9909
+     ],
+     [
+      0.9759,
+      0.9759,
+      0.9759,
+      0.976,
+      0.9761,
+      0.9765,
+      0.977,
+      0.9775,
+      0.9781
+     ]
+    ],
+    "bandwidth_um": [
+     [
+      0.0287,
+      0.0287,
+      0.0289,
+      0.029,
+      0.0292,
+      0.0293,
+      0.0293,
+      0.0293,
+      0.0293
+     ],
+     [
+      0.0281,
+      0.0282,
+      0.0284,
+      0.0286,
+      0.0288,
+      0.0288,
+      0.0288,
+      0.0289,
+      0.0289
+     ],
+     [
+      0.0276,
+      0.0277,
+      0.0279,
+      0.0281,
+      0.0283,
+      0.0284,
+      0.0284,
+      0.0284,
+      0.0285
+     ],
+     [
+      0.0274,
+      0.0275,
+      0.0276,
+      0.0278,
+      0.028,
+      0.028,
+      0.028,
+      0.028,
+      0.028
+     ],
+     [
+      0.0272,
+      0.0272,
+      0.0274,
+      0.0275,
+      0.0276,
+      0.0276,
+      0.0276,
+      0.0275,
+      0.0275
+     ],
+     [
+      0.0269,
+      0.027,
+      0.0271,
+      0.0272,
+      0.0272,
+      0.0272,
+      0.0272,
+      0.0271,
+      0.027
+     ],
+     [
+      0.0266,
+      0.0267,
+      0.0267,
+      0.0268,
+      0.0268,
+      0.0268,
+      0.0267,
+      0.0266,
+      0.0265
+     ],
+     [
+      0.026,
+      0.026,
+      0.0261,
+      0.0261,
+      0.0262,
+      0.0261,
+      0.026,
+      0.026,
+      0.0259
+     ],
+     [
+      0.0254,
+      0.0254,
+      0.0254,
+      0.0255,
+      0.0255,
+      0.0254,
+      0.0254,
+      0.0253,
+      0.0252
+     ]
+    ]
+   },
+   "file": "data/examples/orion/frames/2026W11_2A_0519_1_D1.ntf"
+  }
+ ],
+ "grid": {
+  "projection": "TAN",
+  "crval": [
+   83.822,
+   -5.391
+  ],
+  "size": 512,
+  "pixel_arcsec": 6.15,
+  "center_pixel": 255.5,
+  "orientation": "north up, east left",
+  "row0": "north"
+ },
+ "processing": {
+  "grid": {
+   "projection": "TAN",
+   "size": 512,
+   "pixel_arcsec": 6.15,
+   "orientation": "north up, east left",
+   "crval": "field centre"
+  },
+  "resampling": "bilinear interpolation of the L2 IMAGE extension onto the common grid using the frame's own TAN-SIP WCS (forward A/B and inverse AP/BP polynomials)",
+  "flags": "a flag category is set when a source pixel carrying it contributes more than 25 % of the bilinear weight",
+  "masking": "pixels with NONFUNC, MISSING_DATA, SUR_ERROR, OVERFLOW, HOT, COLD or NONLINEAR flags are set to no data",
+  "display": "per-frame median background subtracted in the browser; one shared asinh stretch for all frames of a field",
+  "units": "MJy/sr (L2 calibrated surface brightness, zodiacal light not subtracted)",
+  "storage": "float16 (relative precision about 0.05 %), values beyond +/-65000 clipped and flagged",
+  "format": {
+   "name": "NTF1",
+   "layout": "magic 'NTF1', uint16 width, uint16 height, uint32 reserved (little endian); float16[width*height] surface brightness in MJy/sr, row 0 = north, NaN = no data; uint8[width*height] flag categories; whole payload gzip-compressed"
+  },
+  "flag_categories": {
+   "bad": {
+    "bit": 1,
+    "flags": [
+     "NONFUNC",
+     "MISSING_DATA",
+     "SUR_ERROR",
+     "OVERFLOW",
+     "HOT",
+     "COLD",
+     "NONLINEAR"
+    ]
+   },
+   "transient": {
+    "bit": 2,
+    "flags": [
+     "TRANSIENT",
+     "OUTLIER"
+    ]
+   },
+   "artifact": {
+    "bit": 4,
+    "flags": [
+     "PERSIST",
+     "CROSSTALK",
+     "GHOST",
+     "GHOST_FPA",
+     "GHOST_EXT",
+     "STREAK",
+     "BLOOM",
+     "HALO"
+    ]
+   },
+   "source": {
+    "bit": 8,
+    "flags": [
+     "SOURCE"
+    ]
+   },
+   "nodata": {
+    "bit": 16,
+    "flags": []
+   },
+   "clipped": {
+    "bit": 32,
+    "flags": []
+   }
+  }
+ },
+ "source": "SPHEREx Level 2 frames from the IRSA AWS Open Data copy (s3://nasa-irsa-spherex)",
+ "prepared_at": "2026-11-14T21:02:37Z",
+ "prepared_with": "scripts/build_examples.py (same code as /api/frame)"
+}
